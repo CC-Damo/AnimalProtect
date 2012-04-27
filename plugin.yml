@@ -1,0 +1,16 @@
+name: AnimalProtect
+version: 1.0.0
+author: damo1995
+main: me.damo1995.AnimalProtect.AnimalProtect
+depends: WorldGuard
+commands:
+   animalprotect:
+       description: 'General AnimalProtect Commands'
+       usage: /animalprotect /animalprotect -reload
+permissions:
+  animalprotect.admin:
+    description: admin permission node
+    children:
+      animalprotect.notify: true
+  animalprotect.notify:
+    description: notify permission node
