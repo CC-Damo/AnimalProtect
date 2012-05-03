@@ -84,6 +84,7 @@ public class AnimalProtect extends JavaPlugin{
 		return (WorldGuardPlugin) plugin;
 	}
 	
+	
 	//Log Message to console stuff
 	protected void logMessage(String msg){
 	PluginDescriptionFile pdFile = this.getDescription();
@@ -100,7 +101,9 @@ public class AnimalProtect extends JavaPlugin{
 		final FileConfiguration cfg = getConfig();
 		FileConfigurationOptions cfgOptions = cfg.options();
 		getConfig().addDefault("protect-hostiles", false);
+		getConfig().addDefault("protect-villiger", true);
 		getConfig().addDefault("notify", true);
+		getConfig().addDefault("notify-interval", "10");
 		getConfig().addDefault("notify-outdated", true);
 		getConfig().addDefault("debug", false);
 		cfgOptions.copyDefaults(true);
