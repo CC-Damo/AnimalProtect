@@ -31,6 +31,7 @@ public class AnimalProtect extends JavaPlugin{
 	String fail = ChatColor.RED + "[AnimalProtect]: ";
 	
 	String protectH = "";	
+	String protectV = "";
 	
 	String mlversion = "";
 	public boolean outdated = false;
@@ -46,6 +47,14 @@ public class AnimalProtect extends JavaPlugin{
 		}
 		else{ this.protectH = "No";}
 		
+		if(this.getConfig().getBoolean("protect-viliger") == true){
+			this.protectV = "Yes";
+		}
+			else{
+				this.protectV = "No";
+			}
+			
+		
 		//event registration
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(this.dl, this);
@@ -59,6 +68,8 @@ public class AnimalProtect extends JavaPlugin{
 		setupConfig();
 		//Check for Updates
 		updateCheck();
+		//Check Config for any errors.
+		validateConfig();
 		
 	}
 	
@@ -102,14 +113,24 @@ public class AnimalProtect extends JavaPlugin{
 		FileConfigurationOptions cfgOptions = cfg.options();
 		getConfig().addDefault("protect-hostiles", false);
 		getConfig().addDefault("protect-villiger", true);
+	//	getConfig().addDefault("use-useflag", false);
 		getConfig().addDefault("notify", true);
-		getConfig().addDefault("notify-interval", "10");
+		getConfig().addDefault("notify-interval", 10);
 		getConfig().addDefault("notify-outdated", true);
 		getConfig().addDefault("debug", false);
 		cfgOptions.copyDefaults(true);
 		cfgOptions.header("Default Config for AnimalProtect");
 		cfgOptions.copyHeader(true);
 		saveConfig();
+	}
+	
+	private void validateConfig(){
+		if(this.getConfig().getInt("notify-interval") > 20){
+			this.logWarning("Notify interval greater then 20");
+			this.logMessage("Notify Interval set to 20");
+			this.getConfig().set("notify-interval", 20);
+			this.saveConfig();
+		}
 	}
 	//Check for commands and such.
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
@@ -120,6 +141,7 @@ public class AnimalProtect extends JavaPlugin{
 				sender.sendMessage(ChatColor.RED + "+ Version: " + getDescription().getVersion());
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "+ Developer: " + getDescription().getAuthors());
 				sender.sendMessage(ChatColor.GOLD + "+ Protect Hostiles: " + this.protectH);
+				sender.sendMessage(ChatColor.YELLOW + "+ Protect Viligers: " + this.protectV);
 				sender.sendMessage(ChatColor.YELLOW + "+++++++++++++++++++++++++++++");
 				return true;
     		}
@@ -131,6 +153,11 @@ public class AnimalProtect extends JavaPlugin{
     				this.protectH = "Yes";
     			}
     			else{ this.protectH = "No";}
+    			if(this.getConfig().getBoolean("protect-viliger") == true){
+    				this.protectV = "Yes";
+    			}
+    			else{ this.protectV = "No";}
+    			this.validateConfig();
     			sender.sendMessage(success + "Configuration Reloaded!");
     			return true;
     		}

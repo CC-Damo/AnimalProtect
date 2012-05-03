@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="C:/Users/JDK/Desktop/API&apos;S/craftbukkit-1.2.5-R1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/JDK/Desktop/API&apos;S/worldguard-5.5-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/JDK/Desktop/API&apos;S/worldedit-5.3-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
