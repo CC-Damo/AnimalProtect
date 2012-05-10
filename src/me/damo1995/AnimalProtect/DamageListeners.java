@@ -59,7 +59,7 @@ public class DamageListeners implements Listener {
 					}
 					}
 		}//Arrow Capture
-		if(event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof Animals){
+		if(event.getDamager() instanceof Player && event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof Animals){
 			Projectile arrow = (Arrow)event.getDamager();
 			Player player = (Player)arrow.getShooter();
 			if(arrow.getShooter() instanceof Player){
@@ -115,7 +115,7 @@ public class DamageListeners implements Listener {
 		}
 		
 		//Arrow capture for above ^^^^^^^
-		if(event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof Monster && plugin.getConfig().getBoolean("protect-hostiles") == true){
+		if(event.getDamager() instanceof Player && event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof Monster && plugin.getConfig().getBoolean("protect-hostiles") == true){
 			Projectile arrow = (Arrow)event.getDamager();
 			Player shooter = (Player)arrow.getShooter();
 			if(arrow.getShooter() instanceof Player){
@@ -147,7 +147,6 @@ public class DamageListeners implements Listener {
 		//Check if a villiger is being attacked and if to protect them.
 		if(event.getDamager() instanceof Player && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villiger") == true){
 			Player player = (Player)event.getDamager();
-			if(event.isCancelled() == true){return;}
 			if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
 				event.setCancelled(false);
 				if(debug == true){
@@ -169,7 +168,7 @@ public class DamageListeners implements Listener {
 		}
 		
 		//Arrow capture for above ^^^^^^^
-		if(event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villiger") == true){
+		if(event.getDamager() instanceof Player && event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villiger") == true){
 			Projectile arrow = (Arrow)event.getDamager();
 			Player shooter = (Player)arrow.getShooter();
 			if(arrow.getShooter() instanceof Player){
