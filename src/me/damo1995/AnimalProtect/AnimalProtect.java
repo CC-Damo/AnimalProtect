@@ -32,33 +32,40 @@ public class AnimalProtect extends JavaPlugin{
 	
 	String protectH = "";	
 	String protectV = "";
+	String protectS = "";
 	
 	String mlversion = "";
 	public boolean outdated = false;
 
 	public final DamageListeners dl = new DamageListeners(this);
+	public final ShearListener shear = new ShearListener(this);
 	public final VersionCheck vc = new VersionCheck(this);
 	
 	//Enable stuff
 	public void onEnable(){
 		//Setting string for Command Info.
+		
 		if(this.getConfig().getBoolean("protect-hostiles") == true){
 			this.protectH = "Yes";
 		}
-		else{ this.protectH = "No";}
+		else{this.protectH = "No";}
 		
-		if(this.getConfig().getBoolean("protect-viliger") == true){
+		if(this.getConfig().getBoolean("protect-villiger") == true){
 			this.protectV = "Yes";
-		}
-			else{
-				this.protectV = "No";
-			}
+			
+		}else{this.protectV = "No";}
+		
+		if(this.getConfig().getBoolean("shear-protect") == true){
+			this.protectS = "Yes";
+			
+		}else{this.protectS = "No";}
 			
 		
 		//event registration
 		PluginManager pm = this.getServer().getPluginManager();
-		pm.registerEvents(this.dl, this);
+		pm.registerEvents(dl, this);
 		pm.registerEvents(vc, this);
+		pm.registerEvents(shear, this);
 		
 		//Log msg
 		this.logMessage("Enabled!");
@@ -113,6 +120,7 @@ public class AnimalProtect extends JavaPlugin{
 		FileConfigurationOptions cfgOptions = cfg.options();
 		getConfig().addDefault("protect-hostiles", false);
 		getConfig().addDefault("protect-villiger", true);
+		getConfig().addDefault("shear-protect", true);
 	//	getConfig().addDefault("use-useflag", false);
 		getConfig().addDefault("notify", true);
 		getConfig().addDefault("notify-interval", 10);
@@ -142,6 +150,7 @@ public class AnimalProtect extends JavaPlugin{
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "+ Developer: " + getDescription().getAuthors());
 				sender.sendMessage(ChatColor.GOLD + "+ Protect Hostiles: " + this.protectH);
 				sender.sendMessage(ChatColor.YELLOW + "+ Protect Viligers: " + this.protectV);
+				sender.sendMessage(ChatColor.BLUE + "+ Shear Protect: " + this.protectS);
 				sender.sendMessage(ChatColor.YELLOW + "+++++++++++++++++++++++++++++");
 				return true;
     		}
@@ -157,6 +166,10 @@ public class AnimalProtect extends JavaPlugin{
     				this.protectV = "Yes";
     			}
     			else{ this.protectV = "No";}
+    			if(this.getConfig().getBoolean("shear-protect") == true){
+    				this.protectS = "Yes";
+    			}
+    			else{ this.protectS = "No";}
     			this.validateConfig();
     			sender.sendMessage(success + "Configuration Reloaded!");
     			return true;

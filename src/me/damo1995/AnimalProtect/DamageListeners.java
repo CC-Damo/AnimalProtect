@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.NPC;
 import org.bukkit.entity.Player;
@@ -29,14 +28,13 @@ public class DamageListeners implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onEntityDamageEvent(EntityDamageByEntityEvent event){
-		boolean debug = DamageListeners.plugin.getConfig().getBoolean("debug");
+	public void handAttack(EntityDamageByEntityEvent event){
 		Location loc = event.getEntity().getLocation();
 		RegionManager rm = plugin.getWorldGuardPlugin().getRegionManager(loc.getWorld());
 		@SuppressWarnings("unused")
 		ApplicableRegionSet set = rm.getApplicableRegions(loc);
-		//ANIMAL//
-		//Check if its a farm/non hostile mob being attacked.
+
+		//-------- Non-Hostile Mob Check --------\\
 		if(event.getDamager() instanceof Player && event.getEntity() instanceof Animals){
 			Player player = (Player) event.getDamager();
 			if(event.isCancelled()){return;}
@@ -58,21 +56,113 @@ public class DamageListeners implements Listener {
 					notifyAdmin(player);
 					}
 					}
-		}//Arrow Capture
-		if(event.getDamager() instanceof Player && event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof Animals){
+		}
+		
+		//-------- END Non-Hostile Mob Check --------\\
+		
+		
+		//-------- Hostile Mob Check --------\\
+		if(event.getDamager() instanceof Player && event.getEntity() instanceof Monster && plugin.getConfig().getBoolean("protect-hostiles") == true){
+			Player player = (Player)event.getDamager();
+			if(event.isCancelled() == true){return;}
+			if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+				event.setCancelled(false);
+				if(DamageListeners.plugin.getConfig().getBoolean("debug") == true){
+				player.sendMessage("DEBUG: Attacked Mob");
+				player.sendMessage("DEBUG: ATTACK SUCCESSFULL");
+				}
+			}
+			else{
+				event.setCancelled(true);
+				if(DamageListeners.plugin.getConfig().getBoolean("debug") == true){
+				player.sendMessage("DEBUG: ATTACKED Mob");
+				player.sendMessage("DEBUG: ATTACK FAILED");
+				}
+				player.sendMessage(fail);
+				if(plugin.getConfig().getBoolean("notify") == true){
+				notifyAdmin(player);
+				}
+			}
+		}
+		//-------- END Hostile Mob Check --------\\
+		
+		
+		//-------- NPC Mob Check --------\\
+		if(event.getDamager() instanceof Player && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villiger") == true){
+			Player player = (Player)event.getDamager();
+			if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+				event.setCancelled(false);
+				if(DamageListeners.plugin.getConfig().getBoolean("debug") == true){
+				player.sendMessage("DEBUG: Attacked Mob");
+				player.sendMessage("DEBUG: ATTACK SUCCESSFULL");
+				}
+			}
+			else{
+				event.setCancelled(true);
+				if(DamageListeners.plugin.getConfig().getBoolean("debug")  == true){
+				player.sendMessage("DEBUG: ATTACKED Mob");
+				player.sendMessage("DEBUG: ATTACK FAILED");
+				}
+				player.sendMessage(fail);
+				if(plugin.getConfig().getBoolean("notify") == true){
+				notifyAdmin(player);
+				}
+			}
+		}
+		//-------- END NPC Mob Check --------\\
+		}	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void rangeAttack(EntityDamageByEntityEvent event){
+		
+		//-------- Non-Hostile Mob Check --------\\
+		if(event.getDamager() instanceof Arrow){
+        
+			
 			Projectile arrow = (Arrow)event.getDamager();
-			Player player = (Player)arrow.getShooter();
-			if(arrow.getShooter() instanceof Player){
+
+			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof Animals){
+				Player player = (Player)arrow.getShooter();
+				Location loc = event.getEntity().getLocation();
 				if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
 					event.setCancelled(false);
-					if(debug == true){
+					if(plugin.getConfig().getBoolean("debug") == true){
 					player.sendMessage("DEBUG: ATTACKED Mob");
 					player.sendMessage("DEBUG: ATTACK SUCCESSFUL");
 					}
 				}
 				else{
 					event.setCancelled(true);
-					if(debug == true){
+					if(plugin.getConfig().getBoolean("debug") == true){
+					player.sendMessage("DEBUG: ATTACKED Mob");
+					player.sendMessage("DEBUG: ATTACK FAILED");
+                                                                      }
+					player.sendMessage(fail);
+					if(plugin.getConfig().getBoolean("notify") == true){
+					notifyAdmin(player);
+                                                                        }
+                    }
+                                                                                            }
+		}
+		
+		//-------- END Non-Hostile Mob Check --------\\
+		
+		//-------- Hostile Mob Check --------\\
+		if(event.getDamager() instanceof Arrow){
+			Projectile arrow = (Arrow)event.getDamager();
+
+			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof Monster && plugin.getConfig().getBoolean("protect-hostiles") == true){
+				Player player = (Player)arrow.getShooter();
+				Location loc = event.getEntity().getLocation();
+				if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+					event.setCancelled(false);
+					if(plugin.getConfig().getBoolean("debug") == true){
+					player.sendMessage("DEBUG: ATTACKED Mob");
+					player.sendMessage("DEBUG: ATTACK SUCCESSFUL");
+					}
+				}
+				else{
+					event.setCancelled(true);
+					if(plugin.getConfig().getBoolean("debug") == true){
 					player.sendMessage("DEBUG: ATTACKED Mob");
 					player.sendMessage("DEBUG: ATTACK FAILED");
 					}
@@ -80,120 +170,43 @@ public class DamageListeners implements Listener {
 					if(plugin.getConfig().getBoolean("notify") == true){
 					notifyAdmin(player);
 					}
-					
-				
 				}
 			}
+		}
+		
+		//-------- END Hostile Mob Check --------\\
+		
+		//-------- Villager Mob Check --------\\
+		if(event.getDamager() instanceof Arrow){
+			Projectile arrow = (Arrow)event.getDamager();
 
-		}
-		//ANIMAL//	
-		
-		
-		//HOSTILE//
-		//Check if a hostile is being attacked and if to protect them.
-		if(event.getDamager() instanceof Player && event.getEntity() instanceof Monster && plugin.getConfig().getBoolean("protect-hostiles") == true){
-			Player player = (Player)event.getDamager();
-			if(event.isCancelled() == true){return;}
-			if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
-				event.setCancelled(false);
-				if(debug == true){
-				player.sendMessage("DEBUG: Attacked Mob");
-				player.sendMessage("DEBUG: ATTACK SUCCESSFULL");
-				}
-			}
-			else{
-				event.setCancelled(true);
-				if(debug == true){
-				player.sendMessage("DEBUG: ATTACKED Mob");
-				player.sendMessage("DEBUG: ATTACK FAILED");
-				}
-				player.sendMessage(fail);
-				if(plugin.getConfig().getBoolean("notify") == true){
-				notifyAdmin(player);
-				}
-			}
-		}
-		
-		//Arrow capture for above ^^^^^^^
-		if(event.getDamager() instanceof Player && event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof Monster && plugin.getConfig().getBoolean("protect-hostiles") == true){
-			Projectile arrow = (Arrow)event.getDamager();
-			Player shooter = (Player)arrow.getShooter();
-			if(arrow.getShooter() instanceof Player){
-				if(plugin.getWorldGuardPlugin().canBuild(shooter, event.getEntity().getLocation())){
+			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villager") == true){
+				Player player = (Player)arrow.getShooter();
+				Location loc = event.getEntity().getLocation();
+				if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
 					event.setCancelled(false);
-					if(debug == true){
-					shooter.sendMessage("DEBUG: ATTACKED Mob");
-					shooter.sendMessage("DEBUG: ATTACK SUCCESSFUL");
+					if(plugin.getConfig().getBoolean("debug") == true){
+					player.sendMessage("DEBUG: ATTACKED Mob");
+					player.sendMessage("DEBUG: ATTACK SUCCESSFUL");
 					}
-				}else{
+				}
+				else{
 					event.setCancelled(true);
-					if(debug == true){
-					shooter.sendMessage("DEBUG: ATTACKED Mob");
-					shooter.sendMessage("DEBUG: ATTACK FAILED");
+					if(plugin.getConfig().getBoolean("debug") == true){
+					player.sendMessage("DEBUG: ATTACKED Mob");
+					player.sendMessage("DEBUG: ATTACK FAILED");
 					}
-					shooter.sendMessage(fail);
+					player.sendMessage(fail);
 					if(plugin.getConfig().getBoolean("notify") == true){
-					this.notifyAdmin(shooter);
+					notifyAdmin(player);
 					}
-				}
-			}
-			
-		}
-	//HOSTILE//	
-		
-		
-		
-		//NPC//
-		//Check if a villiger is being attacked and if to protect them.
-		if(event.getDamager() instanceof Player && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villiger") == true){
-			Player player = (Player)event.getDamager();
-			if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
-				event.setCancelled(false);
-				if(debug == true){
-				player.sendMessage("DEBUG: Attacked Mob");
-				player.sendMessage("DEBUG: ATTACK SUCCESSFULL");
-				}
-			}
-			else{
-				event.setCancelled(true);
-				if(debug  == true){
-				player.sendMessage("DEBUG: ATTACKED Mob");
-				player.sendMessage("DEBUG: ATTACK FAILED");
-				}
-				player.sendMessage(fail);
-				if(plugin.getConfig().getBoolean("notify") == true){
-				notifyAdmin(player);
 				}
 			}
 		}
-		
-		//Arrow capture for above ^^^^^^^
-		if(event.getDamager() instanceof Player && event.getDamager().getType() == EntityType.ARROW && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villiger") == true){
-			Projectile arrow = (Arrow)event.getDamager();
-			Player shooter = (Player)arrow.getShooter();
-			if(arrow.getShooter() instanceof Player){
-				if(plugin.getWorldGuardPlugin().canBuild(shooter, event.getEntity().getLocation())){
-					event.setCancelled(false);
-					if(debug == true){
-					shooter.sendMessage("DEBUG: ATTACKED Mob");
-					shooter.sendMessage("DEBUG: ATTACK SUCCESSFUL");
-					}
-				}else{
-					event.setCancelled(true);
-					if(debug == true){
-					shooter.sendMessage("DEBUG: ATTACKED Mob");
-					shooter.sendMessage("DEBUG: ATTACK FAILED");
-					}
-					shooter.sendMessage(fail);
-					if(plugin.getConfig().getBoolean("notify") == true){
-					this.notifyAdmin(shooter);
-					}
-				}
-			}
-			
-		}
-		//NPC//
-		}	
+		//-------- END Villager Mob Check --------\\
+	}
+
+
 	
 	//Notify Admin List.
 	public void notifyAdmin(Player player){
