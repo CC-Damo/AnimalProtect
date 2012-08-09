@@ -33,11 +33,13 @@ public class AnimalProtect extends JavaPlugin{
 	String protectH = "";	
 	String protectV = "";
 	String protectS = "";
+	String protectG = "";
 	
 	String mlversion = "";
 	public boolean outdated = false;
 
 	public final DamageListeners dl = new DamageListeners(this);
+//	public final EvEDamageListener Edl = new EvEDamageListener(this);
 	public final ShearListener shear = new ShearListener(this);
 	public final VersionCheck vc = new VersionCheck(this);
 	
@@ -55,6 +57,11 @@ public class AnimalProtect extends JavaPlugin{
 			
 		}else{this.protectV = "No";}
 		
+		if(this.getConfig().getBoolean("protect-golems") == true){
+			this.protectG = "Yes";
+			
+		}else{this.protectG = "No";}
+		
 		if(this.getConfig().getBoolean("shear-protect") == true){
 			this.protectS = "Yes";
 			
@@ -64,6 +71,7 @@ public class AnimalProtect extends JavaPlugin{
 		//event registration
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(dl, this);
+//		pm.registerEvents(Edl, this);
 		pm.registerEvents(vc, this);
 		pm.registerEvents(shear, this);
 		
@@ -120,7 +128,10 @@ public class AnimalProtect extends JavaPlugin{
 		FileConfigurationOptions cfgOptions = cfg.options();
 		getConfig().addDefault("protect-hostiles", false);
 		getConfig().addDefault("protect-villiger", true);
+//		getConfig().addDefault("protect-villagers-from-mobs", false);
 		getConfig().addDefault("shear-protect", true);
+		getConfig().addDefault("protect-golems", true);
+//		getConfig().addDefault("protect-golems-from-mobs", false);
 	//	getConfig().addDefault("use-useflag", false);
 		getConfig().addDefault("notify", true);
 		getConfig().addDefault("notify-interval", 10);
@@ -203,6 +214,10 @@ public class AnimalProtect extends JavaPlugin{
 	        } catch(IOException e) {
 	                e.printStackTrace();
 	        }
+	          catch(NumberFormatException e){
+	        	  e.printStackTrace();
+	        	  this.logMessage("Could not connect to Update Server.");
+	          }
 
 	        return null;
 	}

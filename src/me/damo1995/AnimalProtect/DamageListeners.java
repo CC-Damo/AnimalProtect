@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Golem;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.NPC;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class DamageListeners implements Listener {
 		if(event.getDamager() instanceof Player && event.getEntity() instanceof Animals){
 			Player player = (Player) event.getDamager();
 			if(event.isCancelled()){return;}
-				if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+				if(plugin.getWorldGuardPlugin().canBuild(player, loc) || player.hasPermission("animalprotect.bypass")){
 					event.setCancelled(false);
 					if(plugin.getConfig().getBoolean("debug") == true){
 					player.sendMessage("DEBUG: Attacked Mob");
@@ -65,7 +66,7 @@ public class DamageListeners implements Listener {
 		if(event.getDamager() instanceof Player && event.getEntity() instanceof Monster && plugin.getConfig().getBoolean("protect-hostiles") == true){
 			Player player = (Player)event.getDamager();
 			if(event.isCancelled() == true){return;}
-			if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+			if(plugin.getWorldGuardPlugin().canBuild(player, loc) || player.hasPermission("animalprotect.bypass")){
 				event.setCancelled(false);
 				if(DamageListeners.plugin.getConfig().getBoolean("debug") == true){
 				player.sendMessage("DEBUG: Attacked Mob");
@@ -90,7 +91,7 @@ public class DamageListeners implements Listener {
 		//-------- NPC Mob Check --------\\
 		if(event.getDamager() instanceof Player && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villiger") == true){
 			Player player = (Player)event.getDamager();
-			if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+			if(plugin.getWorldGuardPlugin().canBuild(player, loc) || player.hasPermission("animalprotect.bypass")){
 				event.setCancelled(false);
 				if(DamageListeners.plugin.getConfig().getBoolean("debug") == true){
 				player.sendMessage("DEBUG: Attacked Mob");
@@ -110,6 +111,30 @@ public class DamageListeners implements Listener {
 			}
 		}
 		//-------- END NPC Mob Check --------\\
+		
+		//-------- Golem Mob Check --------\\
+		if(event.getDamager() instanceof Player && event.getEntity() instanceof Golem && plugin.getConfig().getBoolean("protect-golems") == true){
+			Player player = (Player)event.getDamager();
+			if(plugin.getWorldGuardPlugin().canBuild(player, loc) || player.hasPermission("animalprotect.bypass")){
+				event.setCancelled(false);
+				if(DamageListeners.plugin.getConfig().getBoolean("debug") == true){
+				player.sendMessage("DEBUG: Attacked Mob");
+				player.sendMessage("DEBUG: ATTACK SUCCESSFULL");
+				}
+			}
+			else{
+				event.setCancelled(true);
+				if(DamageListeners.plugin.getConfig().getBoolean("debug")  == true){
+				player.sendMessage("DEBUG: ATTACKED Mob");
+				player.sendMessage("DEBUG: ATTACK FAILED");
+				}
+				player.sendMessage(fail);
+				if(plugin.getConfig().getBoolean("notify") == true){
+				notifyAdmin(player);
+				}
+			}
+		}
+		//-------- Golem NPC Mob Check --------\\
 		}	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void rangeAttack(EntityDamageByEntityEvent event){
@@ -123,7 +148,7 @@ public class DamageListeners implements Listener {
 			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof Animals){
 				Player player = (Player)arrow.getShooter();
 				Location loc = event.getEntity().getLocation();
-				if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+				if(plugin.getWorldGuardPlugin().canBuild(player, loc) || player.hasPermission("animalprotect.bypass")){
 					event.setCancelled(false);
 					if(plugin.getConfig().getBoolean("debug") == true){
 					player.sendMessage("DEBUG: ATTACKED Mob");
@@ -153,7 +178,7 @@ public class DamageListeners implements Listener {
 			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof Monster && plugin.getConfig().getBoolean("protect-hostiles") == true){
 				Player player = (Player)arrow.getShooter();
 				Location loc = event.getEntity().getLocation();
-				if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+				if(plugin.getWorldGuardPlugin().canBuild(player, loc) || player.hasPermission("animalprotect.bypass")){
 					event.setCancelled(false);
 					if(plugin.getConfig().getBoolean("debug") == true){
 					player.sendMessage("DEBUG: ATTACKED Mob");
@@ -183,7 +208,7 @@ public class DamageListeners implements Listener {
 			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof NPC && plugin.getConfig().getBoolean("protect-villager") == true){
 				Player player = (Player)arrow.getShooter();
 				Location loc = event.getEntity().getLocation();
-				if(plugin.getWorldGuardPlugin().canBuild(player, loc)){
+				if(plugin.getWorldGuardPlugin().canBuild(player, loc) || player.hasPermission("animalprotect.bypass")){
 					event.setCancelled(false);
 					if(plugin.getConfig().getBoolean("debug") == true){
 					player.sendMessage("DEBUG: ATTACKED Mob");
@@ -204,6 +229,35 @@ public class DamageListeners implements Listener {
 			}
 		}
 		//-------- END Villager Mob Check --------\\
+		
+		//-------- Golem Mob Check --------\\
+		if(event.getDamager() instanceof Arrow){
+			Projectile arrow = (Arrow)event.getDamager();
+
+			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof Golem && plugin.getConfig().getBoolean("protect-golems") == true){
+				Player player = (Player)arrow.getShooter();
+				Location loc = event.getEntity().getLocation();
+				if(plugin.getWorldGuardPlugin().canBuild(player, loc) || player.hasPermission("animalprotect.bypass")){
+					event.setCancelled(false);
+					if(plugin.getConfig().getBoolean("debug") == true){
+					player.sendMessage("DEBUG: ATTACKED Mob");
+					player.sendMessage("DEBUG: ATTACK SUCCESSFUL");
+					}
+				}
+				else{
+					event.setCancelled(true);
+					if(plugin.getConfig().getBoolean("debug") == true){
+					player.sendMessage("DEBUG: ATTACKED Mob");
+					player.sendMessage("DEBUG: ATTACK FAILED");
+					}
+					player.sendMessage(fail);
+					if(plugin.getConfig().getBoolean("notify") == true){
+					notifyAdmin(player);
+					}
+				}
+			}
+		}
+		//-------- END Golem Mob Check --------\\
 	}
 
 
@@ -229,3 +283,4 @@ public class DamageListeners implements Listener {
 
 }
 	
+

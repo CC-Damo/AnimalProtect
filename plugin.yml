@@ -1,5 +1,5 @@
 name: AnimalProtect
-version: 1.3.0
+version: 1.3.2
 author: damo1995
 main: me.damo1995.AnimalProtect.AnimalProtect
 depends: WorldGuard
@@ -12,5 +12,11 @@ permissions:
     description: admin permission node
     children:
       animalprotect.notify: true
+      animalprotect.bypass: true
+    default: op
   animalprotect.notify:
     description: notify permission node
+    default: op
+  animalprotect.bypass:
+    description: bypass animalprotection.
+    default: op
