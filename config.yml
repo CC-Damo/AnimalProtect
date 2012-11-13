@@ -1,0 +1,17 @@
+#Default Animal Protect Config Version 3.3.3
+notify: true
+notify-interval: 10
+notify-outdated: true
+debug: false
+protect-from-player:
+     - CHICKEN
+     - COW
+     - MUSHROOM_COW
+     - OCELOT
+     - PIG
+     - SHEEP
+     - WOLF
+     - IRON_GOLOM
+     - SNOWMAN
+protect-from-monsters:
+     - VILLAGER

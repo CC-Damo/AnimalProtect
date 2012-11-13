@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Users/JDK/Desktop/API&apos;S/worldguard-5.5-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/JDK/Desktop/API&apos;S/worldedit-5.3-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/JDK/Desktop/API&apos;S/craftbukkit-1.3.1-R1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Damien/Desktop/lib/WorldGuard.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Damien/Desktop/lib/WorldEdit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Damien/Desktop/lib/craftbukkit-1.4.2-R0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -20,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
@@ -30,48 +31,19 @@ public class AnimalProtect extends JavaPlugin{
 	
 	String fail = ChatColor.RED + "[AnimalProtect]: ";
 	
-	String protectH = "";	
-	String protectV = "";
-	String protectS = "";
-	String protectG = "";
-	
 	String mlversion = "";
 	public boolean outdated = false;
 
-	public final DamageListeners dl = new DamageListeners(this);
-//	public final EvEDamageListener Edl = new EvEDamageListener(this);
+//	public final DamageListeners dl = new DamageListeners(this);
+	public final NewDamageListeners dl = new NewDamageListeners(this);
 	public final ShearListener shear = new ShearListener(this);
 	public final VersionCheck vc = new VersionCheck(this);
 	
 	//Enable stuff
-	public void onEnable(){
-		//Setting string for Command Info.
-		
-		if(this.getConfig().getBoolean("protect-hostiles") == true){
-			this.protectH = "Yes";
-		}
-		else{this.protectH = "No";}
-		
-		if(this.getConfig().getBoolean("protect-villiger") == true){
-			this.protectV = "Yes";
-			
-		}else{this.protectV = "No";}
-		
-		if(this.getConfig().getBoolean("protect-golems") == true){
-			this.protectG = "Yes";
-			
-		}else{this.protectG = "No";}
-		
-		if(this.getConfig().getBoolean("shear-protect") == true){
-			this.protectS = "Yes";
-			
-		}else{this.protectS = "No";}
-			
-		
+	public void onEnable(){		
 		//event registration
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(dl, this);
-//		pm.registerEvents(Edl, this);
 		pm.registerEvents(vc, this);
 		pm.registerEvents(shear, this);
 		
@@ -85,13 +57,25 @@ public class AnimalProtect extends JavaPlugin{
 		updateCheck();
 		//Check Config for any errors.
 		validateConfig();
-		
+		collectStats();
 	}
 	
+	public void collectStats(){
+		try {
+			MetricsLite metrics = new MetricsLite(this);
+			metrics.start();
+			this.logMessage("Collecting Stats");
+			this.logMessage("If You do not wish for AnimalProtect to collect stats please set opt-out to true");
+			} catch (IOException e) {
+			this.logMessage("Coulden't submit stats!");
+		}
+		
+	}
 	
 	public void onDisable(){
 		//Log MSG disabled.
 		this.logMessage("Disabled!");
+		this.getServer().getPluginManager().disablePlugin(this);
 		
 	}
 	
@@ -126,17 +110,7 @@ public class AnimalProtect extends JavaPlugin{
 	private void setupConfig(){
 		final FileConfiguration cfg = getConfig();
 		FileConfigurationOptions cfgOptions = cfg.options();
-		getConfig().addDefault("protect-hostiles", false);
-		getConfig().addDefault("protect-villiger", true);
-//		getConfig().addDefault("protect-villagers-from-mobs", false);
-		getConfig().addDefault("shear-protect", true);
-		getConfig().addDefault("protect-golems", true);
-//		getConfig().addDefault("protect-golems-from-mobs", false);
-	//	getConfig().addDefault("use-useflag", false);
-		getConfig().addDefault("notify", true);
-		getConfig().addDefault("notify-interval", 10);
-		getConfig().addDefault("notify-outdated", true);
-		getConfig().addDefault("debug", false);
+		this.saveDefaultConfig();
 		cfgOptions.copyDefaults(true);
 		cfgOptions.header("Default Config for AnimalProtect");
 		cfgOptions.copyHeader(true);
@@ -159,9 +133,7 @@ public class AnimalProtect extends JavaPlugin{
 				sender.sendMessage(ChatColor.GREEN + "+ A Animal Friendley Plugin!");
 				sender.sendMessage(ChatColor.RED + "+ Version: " + getDescription().getVersion());
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "+ Developer: " + getDescription().getAuthors());
-				sender.sendMessage(ChatColor.GOLD + "+ Protect Hostiles: " + this.protectH);
-				sender.sendMessage(ChatColor.YELLOW + "+ Protect Viligers: " + this.protectV);
-				sender.sendMessage(ChatColor.BLUE + "+ Shear Protect: " + this.protectS);
+				sender.sendMessage(ChatColor.AQUA + "http://www.dev.bukkit.org/AnimalProtect");
 				sender.sendMessage(ChatColor.YELLOW + "+++++++++++++++++++++++++++++");
 				return true;
     		}
@@ -169,21 +141,23 @@ public class AnimalProtect extends JavaPlugin{
     			//reload config stuff.
     			this.reloadConfig();
     			//Set string on reload of config.
-    			if(this.getConfig().getBoolean("protect-hostiles") == true){
-    				this.protectH = "Yes";
-    			}
-    			else{ this.protectH = "No";}
-    			if(this.getConfig().getBoolean("protect-viliger") == true){
-    				this.protectV = "Yes";
-    			}
-    			else{ this.protectV = "No";}
-    			if(this.getConfig().getBoolean("shear-protect") == true){
-    				this.protectS = "Yes";
-    			}
-    			else{ this.protectS = "No";}
     			this.validateConfig();
     			sender.sendMessage(success + "Configuration Reloaded!");
     			return true;
+    		}
+    		if(args[0].equalsIgnoreCase("-list") && args[1].equalsIgnoreCase("player") && sender.isOp() || sender.hasPermission("animalprotect.list")){
+    			List<String> pfp = getConfig().getStringList("protect-from-player");
+    			sender.sendMessage(success + "The following are protected from players");
+    			for(String i : pfp){
+    				sender.sendMessage(i);
+    			}
+    		}
+    		if(args[0].equalsIgnoreCase("-list") && args[1].equalsIgnoreCase("mobs") && sender.isOp() || sender.hasPermission("animalprotect.list")){
+    			List<String> pfp = getConfig().getStringList("protect-from-monsters");
+    			sender.sendMessage(success + "The following are protected from mobs");
+    			for(String i : pfp){
+    				sender.sendMessage(i);
+    				}
     		}
     		else{ sender.sendMessage(fail + "You lack the necessary permissions to perform this action.");
     		return true;
@@ -211,12 +185,13 @@ public class AnimalProtect extends JavaPlugin{
 	                return lines;
 	        } catch(MalformedURLException e) {
 	                e.printStackTrace();
+		    this.logMessage("Could not connect to Update Server.");
 	        } catch(IOException e) {
 	                e.printStackTrace();
 	        }
 	          catch(NumberFormatException e){
 	        	  e.printStackTrace();
-	        	  this.logMessage("Could not connect to Update Server.");
+	        	  this.logMessage("Please Report this error to animalprotect@ddelay.co.uk");
 	          }
 
 	        return null;
