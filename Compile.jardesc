@@ -13,8 +13,8 @@
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <file path="/AnimalProtect/.project"/>
         <file path="/AnimalProtect/config.yml"/>
-        <file path="/AnimalProtect/.classpath"/>
         <file path="/AnimalProtect/plugin.yml"/>
+        <file path="/AnimalProtect/.classpath"/>
         <javaElement handleIdentifier="=AnimalProtect/src"/>
         <file path="/AnimalProtect/README"/>
     </selectedElements>

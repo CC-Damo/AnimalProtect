@@ -113,7 +113,7 @@ public void notifyAdmin(Player player){
 			if (onlinePlayer.hasPermission("animalprotect-notify")
 					|| onlinePlayer.isOp()) {
 				onlinePlayer.sendMessage(plugin.fail + player.getName() + " " + "Attempted to kill protected animals");
-				DamageListeners.plugin.logMessage(player.getName() + " " + "Attempted to kill protected animals");
+				NewDamageListeners.plugin.logMessage(player.getName() + " " + "Attempted to kill protected animals");
 			}
 		}
 	}

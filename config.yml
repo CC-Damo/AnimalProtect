@@ -1,7 +1,8 @@
-#Default Animal Protect Config Version 3.3.3
+#Default Animal Protect Config Version 1.4.1
 notify: true
 notify-interval: 10
-notify-outdated: true
+notify-outdated: false
+update-check: false
 debug: false
 protect-from-player:
      - CHICKEN

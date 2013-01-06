@@ -1,5 +1,5 @@
 name: AnimalProtect
-version: 1.4.0
+version: 1.4.2
 author: damo1995
 main: me.damo1995.AnimalProtect.AnimalProtect
 depends: WorldGuard

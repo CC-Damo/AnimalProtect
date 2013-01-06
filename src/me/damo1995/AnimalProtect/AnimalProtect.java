@@ -54,7 +54,12 @@ public class AnimalProtect extends JavaPlugin{
 		//CFG Setup
 		setupConfig();
 		//Check for Updates
+		if(getConfig().getBoolean("update-check") == true){
 		updateCheck();
+		}
+		else{
+			return;
+		}
 		//Check Config for any errors.
 		validateConfig();
 		collectStats();
@@ -130,10 +135,10 @@ public class AnimalProtect extends JavaPlugin{
     	if(commandLabel.equalsIgnoreCase("animalprotect")){
     		if(args.length < 1){
 				sender.sendMessage(ChatColor.YELLOW + "+++++++++AnimalProtect++++++++++");
-				sender.sendMessage(ChatColor.GREEN + "+ A Animal Friendley Plugin!");
+				sender.sendMessage(ChatColor.GREEN + "+ A Animal Friendly Plugin!");
 				sender.sendMessage(ChatColor.RED + "+ Version: " + getDescription().getVersion());
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "+ Developer: " + getDescription().getAuthors());
-				sender.sendMessage(ChatColor.AQUA + "http://www.dev.bukkit.org/AnimalProtect");
+				sender.sendMessage(ChatColor.AQUA + "http://www.dev.bukkit.org/server-mods/animalprotect");
 				sender.sendMessage(ChatColor.YELLOW + "+++++++++++++++++++++++++++++");
 				return true;
     		}
