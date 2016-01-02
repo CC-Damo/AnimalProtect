@@ -1,0 +1,53 @@
+name: AnimalProtect
+version: 1.6.2
+author: damo1995
+main: me.damo1995.AnimalProtect.AnimalProtect
+depends: WorldGuard
+commands:
+   animalprotect:
+       description: 'AnimalProtect Info'
+       usage: /animalprotect
+   aplist:
+       description: 'AnimalProtect Lists'
+       usage: /aplist [type]
+   apreload:
+       description: 'AnimalProtect Reload Config'
+       usage: /apreload 
+   apupdate:
+       description: 'AnimalProtect update'
+       usage: /apupdate
+   apht:
+       description: 'AnimalProtect horse type'
+       usage: /apht [type]
+   apunclaim:
+       description: 'AnimalProtect unclaim horse'
+       usage: /apunclaim
+permissions:
+  animalprotect.admin:
+    description: admin permission node
+    children:
+      animalprotect.notify: true
+      animalprotect.bypass: true
+      animalprotect.list: true
+      animalprotect.update: true
+      animalprotect.apht: true
+      animalprotect.unclaim: true
+    default: op
+  animalprotect.notify:
+    description: notify permission node
+    default: op
+  animalprotect.bypass:
+    description: bypass animalprotection.
+    default: op
+  animalprotect.list:
+    description: List the configuration options.
+    default: op
+  animalprotect.update:
+    description: Allow AP updates.
+    default: op
+  animalprotect.apht:
+    description: Allow AP updates.
+    default: op
+  animalprotect.unclaim:
+    description: Unclaim a horse
+    default: op

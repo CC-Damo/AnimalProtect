@@ -1,0 +1,30 @@
+#Default Animal Protect Config Version 1.5.1
+debug: false
+notify: true
+notify-interval: 10
+notify-player: true
+notify-outdated: true
+update-check: true
+shear-protect: true
+armorstand-protect: true
+ignore-global: false
+protect-from-player:
+     - CHICKEN
+     - COW
+     - MUSHROOM_COW
+     - OCELOT
+     - PIG
+     - SHEEP
+     - WOLF
+     - IRON_GOLEM
+     - SNOWMAN
+     - HORSE
+     - ARMOR_STAND
+     - RABBIT
+protect-from-monsters:
+     - VILLAGER
+horse-rideprotect: false
+FailMessage: You cannot attack mobs here!
+RideMessage: You cant ride this Horse/Donkey!
+CommandFail: You lack the necessary permissions to perform this action.
+AdminNotification: Attempted to kill protected animals
