@@ -6,7 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="K:/Spigot Build Tools/craftbukkit-1.9.4.jar"/>
 	<classpathentry kind="lib" path="K:/Lib/worldguard-legacy-6.1.2-SNAPSHOT-dist.jar"/>
+	<classpathentry kind="lib" path="K:/Spigot Build Tools/craftbukkit-1.10.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
